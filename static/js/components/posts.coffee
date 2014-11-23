@@ -33,6 +33,8 @@ Post = React.createClass
     loadComments: ->
         return if !@props.post.kids
 
+        return @setState open: false if @state.open
+
         @setState loading: true
         PostsDispatcher.getComments @props.post.kids, (err, comments) =>
             @setState
@@ -40,12 +42,15 @@ Post = React.createClass
                 open: true
                 comments: comments
 
+    openArticle: ->
+        window.open @props.post.url
+
     render: ->
         <div className={'post' + (if @state.open then ' open' else '')}>
             <span className='score'>{@props.post.score}</span>
-            <p className='title'>{@props.post.title}</p>
+            <a className='title' onClick={@openArticle}>{@props.post.title}</a>
             <div className='details'>
-                {<span className='n_comments' onClick={@toggleComments}>{@props.post.kids.length}</span> if @props.post.kids?}
+                {<a className='n_comments' onClick={@toggleComments}>{@props.post.kids.length}</a> if @props.post.kids?}
                 <span className='by'>{@props.post.by}</span>
                 <span className='time'>{showTime @props.post.time}</span>
             </div>
@@ -62,6 +67,8 @@ Comment = React.createClass
     loadComments: ->
         return if !@props.comment.kids
 
+        return @setState open: false if @state.open
+
         @setState loading: true
         PostsDispatcher.getComments @props.comment.kids, (err, comments) =>
             @setState
@@ -73,7 +80,7 @@ Comment = React.createClass
         <div className={'comment' + (if @state.open then ' open' else '')}>
             <div className='text' dangerouslySetInnerHTML={{__html: @props.comment.text}}></div>
             <div className='details'>
-                {<span className='n_comments' onClick={@loadComments}>{@props.comment.kids.length}</span> if @props.comment.kids?}
+                {<a className='n_comments' onClick={@loadComments}>{@props.comment.kids.length}</a> if @props.comment.kids?}
                 <span className='by'>{@props.comment.by}</span>
                 <span className='time'>{showTime @props.comment.time}</span>
             </div>
