@@ -7,13 +7,17 @@ showTime = (t) -> moment(t*1000).fromNow()
 Posts = React.createClass
     getInitialState: ->
         posts: []
+        loading: true
 
     componentWillMount: ->
         PostsDispatcher.getPosts (err, posts) =>
-            @setState {posts}
+            @setState {posts, loading: false}
 
     render: ->
-        <div>{@state.posts.map (p) -> <Post post={p} />}</div>
+        <div>
+            {@state.posts.map (p) -> <Post post={p} />}
+            {<div className='loading'>Loading posts...</div> if @state.loading}
+        </div>
 
 Post = React.createClass
     getInitialState: ->
