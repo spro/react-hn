@@ -26,10 +26,11 @@ pipeline_route = (method, url, script) ->
         pipeline.exec script, inp, (err, result) ->
             console.log '[ERROR] ' + err if err?
             cached[req.url] = result
+            setTimeout (-> delete cached[req.url]), 30000
             res.json result
 
 pipeline_route 'get', '/posts.json', '''
-get $hnapi/topstories.json | head 10
+get $hnapi/topstories.json | head 50
     || get $( key $hnapi /item/ $! .json )
 '''
 
