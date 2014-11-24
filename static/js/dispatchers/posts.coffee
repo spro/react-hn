@@ -1,12 +1,23 @@
 $ = require 'jquery'
+_ = require 'underscore'
+Backbone = require 'backbone'
+PostsStore = require '../stores/posts'
 
-PostsDispatcher =
+PostsDispatcher = _.extend {}, Backbone.Events,
 
-    getPosts: (cb) ->
+    fetchPosts: ->
         $.get '/posts.json', (posts) ->
-            cb null, posts
+            PostsStore.posts = PostsStore.filterHidden posts
+            PostsDispatcher.trigger 'update'
 
-    getComments: (comment_ids, cb) ->
+    hidePost: (post) ->
+        console.log 'hiding post', post
+        PostsStore.hidden_ids.push post.id
+        PostsStore.posts = PostsStore.filterHidden PostsStore.posts
+        PostsStore.save()
+        PostsDispatcher.trigger 'update'
+
+    fetchComments: (comment_ids, cb) ->
         ids = comment_ids.join(',')
         $.get '/comments.json?ids='+ids, (comments) ->
             cb null, comments

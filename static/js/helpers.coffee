@@ -1,10 +1,13 @@
-window.cx = React.addons.classSet
-window.slugify  = (s) -> s.toLowerCase().replace /\W+/g, '-'
+moment = require 'moment'
+
+exports.showTime = (t) -> moment(t*1000).fromNow()
+
+exports.slugify  = (s) -> s.toLowerCase().replace /\W+/g, '-'
 
 # Mixins
 # --------------------------------------------------------------------------
 
-window.StoredStateMixin =
+exports.StoredStateMixin =
 
     setStoredState: (cb) ->
         @setState @getStoredState(), cb
